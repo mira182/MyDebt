@@ -1,0 +1,10 @@
+package cz.mira.myapps.mydebt.service.payment;
+
+import cz.mira.myapps.mydebt.model.dto.PaymentDTO;
+
+import java.util.List;
+
+public interface PaymentService {
+
+    public List<PaymentDTO> getAllPayments();
+}
