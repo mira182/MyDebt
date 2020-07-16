@@ -1,28 +1,98 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <v-app id="inspire">
+        <v-navigation-drawer v-model="drawer" app clipped>
+          <v-list dense>
+            <v-list-item link>
+              <v-list-item-action>
+                <v-icon>mdi-view-dashboard</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Add Debt</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-action>
+                <v-icon>mdi-cog</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>Add Payment</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-navigation-drawer>
+
+        <v-app-bar app clipped-left>
+          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-toolbar-title>{{ $t('title')}}</v-toolbar-title>
+          <CreateDebtDialog v-on:save-debt="createDebt($event)" />
+            <v-switch v-model="isDark"></v-switch>
+          <LocaleSwitch/>
+        </v-app-bar>
+
+        <v-main>
+          <v-container fluid>
+            <v-row no-gutters>
+              <v-col>
+                <Debts :debts="debts"/>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-main>
+    </v-app>
   </div>
 </template>
 
 <script>
-import Debt from './components/Debt.vue'
+  import Vuetify from "vuetify";
+  import Debts from "./components/Debts";
+  import DebtRestService from "./services/DebtRestService";
+  import CreateDebtDialog from "./components/dialogs/CreateDebtDialog";
+  import LocaleSwitch from "./components/LocaleSwitch";
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  export default {
+    components: { LocaleSwitch, CreateDebtDialog, Debts},
+    vuetify: new Vuetify(),
+    props: {
+      source: String,
+    },
+    data: () => ({
+      drawer: null,
+      debts: null
+    }),
+    created() {
+      this.$vuetify.theme.dark = true;
+    },
+    mounted() {
+      this.getDebts();
+    },
+    methods: {
+      createDebt(debt) {
+        DebtRestService.createDebt(debt).then(response => {
+          if (response) {
+            this.getDebts();
+          }
+        }).catch(error => {
+          console.log(error);
+        });
+      },
+      getDebts() {
+        DebtRestService.getDebts().then(response => {
+          if (response.status === 200) {
+            this.debts = response.data;
+          }
+        });
+      }
+    },
+    computed: {
+      isDark: {
+        get() {
+          return this.$vuetify.theme.isDark
+        },
+        set() {
+          this.$vuetify.theme.isDark = !this.$vuetify.theme.isDark;
+        }
+      }
+    }
   }
-}
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

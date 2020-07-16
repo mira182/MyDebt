@@ -5,6 +5,7 @@ import cz.mira.myapps.mydebt.model.mapper.PaymentMapper;
 import cz.mira.myapps.mydebt.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentMapper paymentMapper;
 
     @Override
+    @Transactional
     public List<PaymentDTO> getAllPayments() {
         return paymentRepository.findAll().stream()
                 .map(paymentMapper::entityToDto)

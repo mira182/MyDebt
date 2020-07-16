@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PaymentService {
 
-    public List<PaymentDTO> getAllPayments();
+    List<PaymentDTO> getAllPayments();
 }
