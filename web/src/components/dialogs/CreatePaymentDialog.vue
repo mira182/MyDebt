@@ -1,14 +1,9 @@
 <template>
-<!--    <v-row>-->
     <v-dialog v-model="dialog" persistent max-width="400px">
         <template v-slot:activator="{ on, attrs }">
-            <v-row align="center" justify="end">
-                <v-col>
                     <v-btn text v-bind="attrs" v-on="on">
                         <v-icon dark>mdi-plus</v-icon>
                     </v-btn>
-                </v-col>
-            </v-row>
         </template>
 
             <v-card>
@@ -59,7 +54,6 @@
                 </v-form>
             </v-card>
         </v-dialog>
-<!--    </v-row>-->
 </template>
 
 <script>

@@ -25,8 +25,9 @@
         <v-app-bar app clipped-left>
           <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
           <v-toolbar-title>{{ $t('title')}}</v-toolbar-title>
+          <v-spacer></v-spacer>
           <CreateDebtDialog v-on:save-debt="createDebt($event)" />
-            <v-switch v-model="isDark"></v-switch>
+          <v-switch class="pa-0" label="" v-model="isDark"></v-switch>
           <LocaleSwitch/>
         </v-app-bar>
 

@@ -1,7 +1,6 @@
 <template>
-  <div id="debts" class="blog-post">
-    <v-tabs v-if="debts"
-            v-model="tab">
+  <div id="debts" class="blog-post" v-if="debts">
+    <v-tabs v-model="tab">
       <v-tab v-for="debt in debts" :key="debt.title">
         {{ debt.title }}
       </v-tab>

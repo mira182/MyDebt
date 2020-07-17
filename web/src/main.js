@@ -3,7 +3,8 @@ import App from './App.vue';
 import vuetify from './plugins/vuetify';
 import axios from 'axios';
 import VuetifyConfirm from 'vuetify-confirm';
-import i18n from './i18n'
+import i18n from './i18n';
+import 'vuetify/dist/vuetify.css';
 
 Vue.use(VuetifyConfirm, {vuetify});
 

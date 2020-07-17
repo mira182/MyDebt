@@ -1,6 +1,5 @@
 <template>
-    <div class="blog-post">
-        <div v-if="!loading">
+    <div v-if="!loading">
             <v-data-table
                     :headers="headers"
                     :items="payments"
@@ -24,8 +23,11 @@
                 </template>
             </v-data-table>
 
-            <CreatePaymentDialog v-on:save-payment="addPayment($event)"/>
-        </div>
+            <v-row justify="end">
+                <v-col cols="12" sm="1">
+                    <CreatePaymentDialog v-on:save-payment="addPayment($event)"/>
+                </v-col>
+            </v-row>
     </div>
 </template>
 

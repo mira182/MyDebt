@@ -1,28 +1,14 @@
 <template>
-    <v-row justify="center">
         <v-dialog v-model="dialog" persistent max-width="400px">
-<!--            <v-tooltip bottom>-->
-                <template v-slot:activator="{ on, attrs }">
-                    <v-row>
-                        <v-col>
-                            <v-layout>
-                                <v-spacer></v-spacer>
 
-                                <v-btn text v-bind="attrs" v-on="on">
-                                    <v-icon dark>mdi-plus</v-icon>
-                                </v-btn>
-                            </v-layout>
-                        </v-col>
-                    </v-row>
-                </template>
-<!--                <span>Create Debt</span>-->
-<!--            </v-tooltip>-->
+            <template v-slot:activator="{ on, attrs }">
+                <v-btn text v-bind="attrs" v-on="on">
+                    <v-icon dark>mdi-plus</v-icon>
+                </v-btn>
+            </template>
+
             <v-card>
-                <v-form
-                        ref="form"
-                        v-model="valid"
-                        lazy-validation
-                >
+                <v-form ref="form" v-model="valid" lazy-validation>
                 <v-card-title>
                     <span class="headline">New Debt</span>
                 </v-card-title>
@@ -73,7 +59,6 @@
                 </v-form>
             </v-card>
         </v-dialog>
-    </v-row>
 </template>
 
 <script>

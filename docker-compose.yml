@@ -1,17 +1,4 @@
 version: "3.1"
-services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres_for_my_apps
-    expose:
-      - 5435
-    ports:
-      - "5435:5432"
-    environment:
-      - POSTGRES_PASSWORD=macos
-      - POSTGRES_USER=webappuser
-      - POSTGRES_DB=my_debt
-    restart: unless-stopped
   # APP*****************************************
   mycenter:
     build: ./
