@@ -11,6 +11,9 @@
                 <template v-slot:item.paymentDate="{ item }">
                     <span>{{ item.paymentDate }}</span>
                 </template>
+                <template v-slot:item.amount="{ item }">
+                    <span>{{ item.amount }} Kc</span>
+                </template>
                 <template v-slot:item.actions="{ item }">
                     <v-icon small class="mr-2" @click="editItem(item)">
                         mdi-pencil
