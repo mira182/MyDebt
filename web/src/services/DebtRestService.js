@@ -2,18 +2,18 @@ import axios from 'axios';
 
 export default {
     getDebts() {
-        return axios.get('http://localhost:8082/debts');
+        return axios.get(process.env.VUE_APP_API_URL + 'debts');
     },
     createDebt(debt) {
-        return axios.post('http://localhost:8082/debts', debt);
+        return axios.post(process.env.VUE_APP_API_URL + 'debts', debt);
     },
     createPayment(debtId, payment) {
-        return axios.post('http://localhost:8082/debts/' + debtId + '/addPayment', payment);
+        return axios.post(process.env.VUE_APP_API_URL + 'debts/' + debtId + '/addPayment', payment);
     },
     getDebt(debtId) {
-        return axios.get('http://localhost:8082/debts/' + debtId);
+        return axios.get(process.env.VUE_APP_API_URL + 'debts/' + debtId);
     },
     getPaymentsForDebt(debtId) {
-        return axios.get('http://localhost:8082/debts/' + debtId + '/payments');
+        return axios.get(process.env.VUE_APP_API_URL + 'debts/' + debtId + '/payments');
     }
 }
