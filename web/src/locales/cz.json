@@ -1,0 +1,13 @@
+{
+  "title": "Moje Dluhy",
+  "payments": {
+    "paymentDate":  "Datum Platby",
+    "amount": "Částka",
+    "actions": "Akce"
+  },
+  "debts": {
+    "initialDebt": "Počáteční Dluh",
+    "currentDebt": "Současný Dluh",
+    "debtFrom": "Dluh od"
+  }
+}

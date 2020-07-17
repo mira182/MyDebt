@@ -1,0 +1,13 @@
+{
+  "title": "My Debts",
+  "payments": {
+    "paymentDate":  "Payment Date",
+    "amount": "Amount",
+    "actions": "Actions"
+  },
+  "debts": {
+    "initialDebt": "Initial Debt",
+    "currentDebt": "Current Debt",
+    "debtFrom": "Debt From"
+  }
+}
