@@ -1,7 +1,7 @@
 version: "3.1"
 services:
   # APP*****************************************
-  mycenter:
+  mydebt:
     build: ./
     image: mydebt
     network_mode: host
@@ -12,6 +12,4 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
     volumes:
       - "/var/services/homes/mira/Drive/Apps/MyDebt/logs:/usr/app/logs"
-    depends_on:
-      - postgres
     restart: unless-stopped

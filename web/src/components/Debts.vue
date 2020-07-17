@@ -1,5 +1,5 @@
 <template>
-  <div id="debts" class="blog-post" v-if="debts">
+  <div id="debts" class="blog-post" v-if="debts && debts.length > 0">
     <v-tabs v-model="tab">
       <v-tab v-for="debt in debts" :key="debt.title">
         {{ debt.title }}
