@@ -14,13 +14,13 @@
               <v-col offset="1">
                 <span class="text-h6 blue--text text--darken-3">{{ $t('debts.initialDebt')}}</span>
                 <v-chip class="ma-2">
-                  {{debt.initialDebt}}
+                  {{debt.initialDebt | formatPrice}} Kc
                 </v-chip>
               </v-col>
               <v-col>
                 <span class="text-h6 blue--text text--darken-3">{{ $t('debts.currentDebt')}}</span>
                 <v-chip class="ma-2">
-                  {{debt.currentDebt}}
+                  {{debt.currentDebt | formatPrice}} Kc
                 </v-chip>
               </v-col>
               <v-col>

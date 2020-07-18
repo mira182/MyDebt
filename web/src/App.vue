@@ -54,6 +54,12 @@
   import DebtRestService from "./services/DebtRestService";
   import CreateDebtDialog from "./components/dialogs/CreateDebtDialog";
   import LocaleSwitch from "./components/LocaleSwitch";
+  import Vue from 'vue';
+
+  Vue.filter('formatPrice', function (value) {
+    let val = (value/1).toFixed(0);
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  });
 
   export default {
     components: { LocaleSwitch, CreateDebtDialog, Debts },
