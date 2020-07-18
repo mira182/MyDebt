@@ -15,5 +15,7 @@ public interface DebtService {
 
     boolean addPayment(Long debtId, PaymentDTO paymentDTO);
 
+    boolean deletePayment(Long debtId, Long paymentId);
+
     List<PaymentDTO> getPaymentsForDebt(Long debtId);
 }

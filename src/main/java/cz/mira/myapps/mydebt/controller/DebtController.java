@@ -43,4 +43,9 @@ public class DebtController {
         return debtService.addPayment(debtId, paymentDTO);
     }
 
+    @DeleteMapping("/{debtId}/payments/{paymentId}")
+    public boolean deletePayment(@PathVariable Long debtId, @PathVariable Long paymentId) {
+        return debtService.deletePayment(debtId, paymentId);
+    }
+
 }

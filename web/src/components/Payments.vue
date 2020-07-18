@@ -1,5 +1,15 @@
 <template>
     <div v-if="!loading">
+        <v-alert
+                v-model="alert"
+                dismissible
+                close-icon="mdi-delete"
+                color="cyan"
+                border="left"
+                elevation="2"
+                colored-border>
+            You've got <strong>5</strong> new updates on your timeline!.
+        </v-alert>
             <v-data-table
                     :headers="headers"
                     :items="payments"
@@ -24,7 +34,7 @@
             </v-data-table>
 
             <v-row justify="end">
-                <v-col cols="12" sm="1">
+                <v-col cols="12" sm="2">
                     <CreatePaymentDialog v-on:save-payment="addPayment($event)"/>
                 </v-col>
             </v-row>
@@ -84,7 +94,12 @@
             deleteItem (item) {
                 const index = this.payments.indexOf(item);
                 this.$confirm('Do you really want to delete payment?', {title: 'Warning'}).then(res => {
-                    if (res) this.payments.splice(index, 1);
+                    if (res) {
+                        this.payments.splice(index, 1);
+                        DebtRestService.deletePayment(this.debtId, item.id).then(deleted => {
+                            if (deleted) console.log(deleted);
+                        }).catch(reason => console.log(reason));
+                    }
                 });
             },
         }

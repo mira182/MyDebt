@@ -15,5 +15,8 @@ export default {
     },
     getPaymentsForDebt(debtId) {
         return axios.get(process.env.VUE_APP_API_URL + 'debts/' + debtId + '/payments');
+    },
+    deletePayment(debtId, paymentId) {
+        return axios.delete(process.env.VUE_APP_API_URL + 'debts/' + debtId + '/payments/' + paymentId);
     }
 }

@@ -37,7 +37,16 @@ public class Debt {
     }
 
     public void removePayment(Payment payment) {
-        payments.remove(payment);
         payment.setDebt(null);
+        payments.remove(payment);
+    }
+
+    public void removePayment(Long paymentId) {
+        Payment payment = payments.stream()
+                .filter(p -> p.getId().equals(paymentId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Payment with id: " + paymentId + " was not found."));
+        payment.setDebt(null);
+        payments.remove(payment);
     }
 }
