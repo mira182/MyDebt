@@ -8,7 +8,7 @@
                 <v-icon>mdi-view-dashboard</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>Add Debt</v-list-item-title>
+                <v-list-item-title @click="createDebt">Add Debt</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
             <v-list-item link>
@@ -19,6 +19,10 @@
                 <v-list-item-title>Add Payment</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+<!--            <v-list-item>-->
+<!--              <v-btn color="accent" large @click.stop="showDebtDialog = true" />-->
+<!--              <CreateDebtDialog v-on:save-debt="createDebt($event)" />-->
+<!--            </v-list-item>-->
           </v-list>
         </v-navigation-drawer>
 
@@ -52,7 +56,7 @@
   import LocaleSwitch from "./components/LocaleSwitch";
 
   export default {
-    components: { LocaleSwitch, CreateDebtDialog, Debts},
+    components: { LocaleSwitch, CreateDebtDialog, Debts },
     vuetify: new Vuetify(),
     props: {
       source: String,

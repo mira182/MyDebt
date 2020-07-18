@@ -44,7 +44,7 @@ import DebtRestService from "../services/DebtRestService";
 
 export default {
   name: 'Debts',
-  components: {Payments},
+  components: { Payments },
   props: ['debts'],
   data () {
     return {
