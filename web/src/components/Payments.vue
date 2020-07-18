@@ -1,15 +1,6 @@
 <template>
     <div v-if="!loading">
-        <v-alert
-                v-model="alert"
-                dismissible
-                close-icon="mdi-delete"
-                color="cyan"
-                border="left"
-                elevation="2"
-                colored-border>
-            You've got <strong>5</strong> new updates on your timeline!.
-        </v-alert>
+        <AlertSnackBar v-bind:snackbar="snackbar" v-bind:text="alertText"/>
             <v-data-table
                     :headers="headers"
                     :items="payments"
@@ -44,15 +35,18 @@
 <script>
     import CreatePaymentDialog from "./dialogs/CreatePaymentDialog";
     import DebtRestService from "../services/DebtRestService";
+    import AlertSnackBar from "./snackbar/AlertSnackBar";
 
     export default {
         name: "Payments",
-        components: {CreatePaymentDialog},
+        components: {AlertSnackBar, CreatePaymentDialog},
         props: ['debtId'],
         data () {
             return {
                 loading: true,
-                payments: null
+                payments: null,
+                snackBar: false,
+                alertText: null,
             }
         },
         mounted() {
@@ -96,9 +90,11 @@
                 this.$confirm('Do you really want to delete payment?', {title: 'Warning'}).then(res => {
                     if (res) {
                         this.payments.splice(index, 1);
-                        DebtRestService.deletePayment(this.debtId, item.id).then(deleted => {
-                            if (deleted) console.log(deleted);
-                        }).catch(reason => console.log(reason));
+                        this.alertText = "Deleted successfully."
+                        this.snackbar = true;
+                        // DebtRestService.deletePayment(this.debtId, item.id).then(deleted => {
+                        //     if (deleted) this.snackbar = true;
+                        // }).catch(reason => console.log(reason));
                     }
                 });
             },
