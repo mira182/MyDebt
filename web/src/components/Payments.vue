@@ -6,7 +6,6 @@
                     :items="payments"
                     :sort-by="['paymentDate']"
                     :sort-desc="[false, true]"
-                    fixed-header="true"
                     multi-sort
                     class="elevation-1">
                 <template v-slot:item.paymentDate="{ item }">

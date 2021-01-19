@@ -170,36 +170,4 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>gcp-cloud</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-gcp-starter</artifactId>
-                    <version>1.0.0.RELEASE</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-gcp-starter-sql-postgresql</artifactId>
-                    <version>1.2.5.RELEASE</version>
-                </dependency>
-            </dependencies>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.google.cloud.tools</groupId>
-                        <artifactId>appengine-maven-plugin</artifactId>
-                        <version>2.2.0</version>
-                        <configuration>
-                            <projectId>mydebt</projectId>
-                            <version>1</version>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>
