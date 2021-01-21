@@ -8,6 +8,7 @@
   "debts": {
     "initialDebt": "Počáteční Dluh",
     "currentDebt": "Současný Dluh",
-    "debtFrom": "Dluh od"
+    "debtFrom": "Dluh od",
+    "paidDebt": "Splaceno"
   }
 }

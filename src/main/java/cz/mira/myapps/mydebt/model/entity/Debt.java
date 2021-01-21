@@ -46,6 +46,7 @@ public class Debt {
                 .filter(p -> p.getId().equals(paymentId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Payment with id: " + paymentId + " was not found."));
+        currentDebt += payment.getAmount();
         payment.setDebt(null);
         payments.remove(payment);
     }

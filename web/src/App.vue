@@ -8,21 +8,9 @@
                 <v-icon>mdi-view-dashboard</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title @click="createDebt">Add Debt</v-list-item-title>
+                <v-list-item-title @click="goHome()">Home</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item link>
-              <v-list-item-action>
-                <v-icon>mdi-cog</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>Add Payment</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-<!--            <v-list-item>-->
-<!--              <v-btn color="accent" large @click.stop="showDebtDialog = true" />-->
-<!--              <CreateDebtDialog v-on:save-debt="createDebt($event)" />-->
-<!--            </v-list-item>-->
           </v-list>
         </v-navigation-drawer>
 
@@ -30,7 +18,7 @@
           <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
           <v-toolbar-title>{{ $t('title')}}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <CreateDebtDialog v-on:save-debt="createDebt($event)" />
+
           <v-switch class="pa-0" label="" v-model="isDark"></v-switch>
           <LocaleSwitch/>
         </v-app-bar>
@@ -39,9 +27,24 @@
           <v-container fluid>
             <v-row no-gutters>
               <v-col>
-                <Debts :debts="debts"/>
+                <router-view></router-view>
               </v-col>
             </v-row>
+
+
+            <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="snackbar.timeout">
+              {{ snackbar.message }}
+
+              <template v-slot:action="{ attrs }">
+                <v-btn
+                    text
+                    v-bind="attrs"
+                    @click="snackbar.show = false"
+                >
+                  Close
+                </v-btn>
+              </template>
+            </v-snackbar>
           </v-container>
         </v-main>
     </v-app>
@@ -50,49 +53,23 @@
 
 <script>
   import Vuetify from "vuetify";
-  import Debts from "./components/Debts";
-  import DebtRestService from "./services/DebtRestService";
-  import CreateDebtDialog from "./components/dialogs/CreateDebtDialog";
   import LocaleSwitch from "./components/LocaleSwitch";
-  import Vue from 'vue';
-
-  Vue.filter('formatPrice', function (value) {
-    let val = (value/1).toFixed(0);
-    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  });
 
   export default {
-    components: { LocaleSwitch, CreateDebtDialog, Debts },
+    components: { LocaleSwitch },
     vuetify: new Vuetify(),
     props: {
       source: String,
     },
     data: () => ({
-      drawer: null,
-      debts: null
+      drawer: null
     }),
     created() {
       this.$vuetify.theme.dark = true;
     },
-    mounted() {
-      this.getDebts();
-    },
     methods: {
-      createDebt(debt) {
-        DebtRestService.createDebt(debt).then(response => {
-          if (response) {
-            this.getDebts();
-          }
-        }).catch(error => {
-          console.log(error);
-        });
-      },
-      getDebts() {
-        DebtRestService.getDebts().then(response => {
-          if (response.status === 200) {
-            this.debts = response.data;
-          }
-        });
+      goHome() {
+        if (this.$route.fullPath !== '/') this.$router.push('/');
       }
     },
     computed: {
@@ -103,6 +80,9 @@
         set() {
           this.$vuetify.theme.isDark = !this.$vuetify.theme.isDark;
         }
+      },
+      snackbar() {
+        return this.$store.state.snackbar;
       }
     }
   }

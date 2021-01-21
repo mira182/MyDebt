@@ -1,22 +1,25 @@
-import axios from 'axios';
+import api from "../api";
 
 export default {
     getDebts() {
-        return axios.get(process.env.VUE_APP_API_URL + 'debts');
+        return api.get('debts');
     },
     createDebt(debt) {
-        return axios.post(process.env.VUE_APP_API_URL + 'debts', debt);
+        return api.post('debts', debt);
+    },
+    deleteDebt(debtId) {
+        return api.delete('debts/' + debtId);
     },
     createPayment(debtId, payment) {
-        return axios.post(process.env.VUE_APP_API_URL + 'debts/' + debtId + '/addPayment', payment);
+        return api.post('debts/' + debtId + '/addPayment', payment);
     },
     getDebt(debtId) {
-        return axios.get(process.env.VUE_APP_API_URL + 'debts/' + debtId);
+        return api.get('debts/' + debtId);
     },
     getPaymentsForDebt(debtId) {
-        return axios.get(process.env.VUE_APP_API_URL + 'debts/' + debtId + '/payments');
+        return api.get('debts/' + debtId + '/payments');
     },
     deletePayment(debtId, paymentId) {
-        return axios.delete(process.env.VUE_APP_API_URL + 'debts/' + debtId + '/payments/' + paymentId);
+        return api.delete('debts/' + debtId + '/payments/' + paymentId);
     }
 }

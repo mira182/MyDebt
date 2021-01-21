@@ -1,6 +1,5 @@
 <template>
     <div v-if="!loading">
-        <AlertSnackBar v-bind:snackbar="snackbar" v-bind:text="alertText"/>
             <v-data-table
                     :headers="headers"
                     :items="payments"
@@ -35,18 +34,15 @@
 <script>
     import CreatePaymentDialog from "./dialogs/CreatePaymentDialog";
     import DebtRestService from "../services/DebtRestService";
-    import AlertSnackBar from "./snackbar/AlertSnackBar";
 
     export default {
         name: "Payments",
-        components: {AlertSnackBar, CreatePaymentDialog},
+        components: {CreatePaymentDialog},
         props: ['debtId'],
         data () {
             return {
                 loading: true,
-                payments: null,
-                snackBar: false,
-                alertText: null,
+                payments: null
             }
         },
         mounted() {
@@ -64,12 +60,16 @@
         methods: {
             addPayment(payment) {
                 DebtRestService.createPayment(this.debtId, payment).then(response => {
-                    if (response) {
-                        this.getPaymentsForDebt(this.debtId);
-                        this.$emit('payment-added');
-                    }
-                }).catch(error => {
-                    console.error(error);
+                  if (response) {
+                    this.getPaymentsForDebt(this.debtId);
+                    this.$emit('payment-added');
+                  }
+                }).catch(() => {
+                  this.$store.dispatch('setSnackbar', {
+                    show: true,
+                    color: 'error',
+                    message: "Saving payment failed."
+                  });
                 });
             },
             getPaymentsForDebt(debtId) {
@@ -89,12 +89,16 @@
                 const index = this.payments.indexOf(item);
                 this.$confirm('Do you really want to delete payment?', {title: 'Warning'}).then(res => {
                     if (res) {
-                        this.payments.splice(index, 1);
-                        this.alertText = "Deleted successfully."
-                        this.snackbar = true;
-                        // DebtRestService.deletePayment(this.debtId, item.id).then(deleted => {
-                        //     if (deleted) this.snackbar = true;
-                        // }).catch(reason => console.log(reason));
+                      this.payments.splice(index, 1);
+                      DebtRestService.deletePayment(this.debtId, item.id)
+                          .then(() => this.$emit('payment-deleted'))
+                          .catch(() => {
+                            this.$store.dispatch('setSnackbar', {
+                              show: true,
+                              color: 'error',
+                              message: "Saving payment failed."
+                            });
+                          });
                     }
                 });
             },

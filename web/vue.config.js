@@ -10,5 +10,14 @@ module.exports = {
       localeDir: 'locales',
       enableInSFC: true
     }
+  },
+
+  chainWebpack: config => {
+    config
+        .plugin('html')
+        .tap(args => {
+          args[0].title = 'My Debt'
+          return args
+        })
   }
 }

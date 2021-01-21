@@ -50,6 +50,14 @@ public class DebtServiceImpl implements DebtService {
 
     @Override
     @Transactional
+    public boolean deleteDebt(long debtId) {
+        final Debt debt = debtRepository.findById(debtId).orElseThrow(() -> new EntityNotFoundException("Debt with id: " + debtId + " was not found."));
+        debtRepository.delete(debt);
+        return true;
+    }
+
+    @Override
+    @Transactional
     public boolean addPayment(Long debtId, PaymentDTO paymentDTO) {
         final Debt debt = debtRepository.findById(debtId).orElseThrow(() -> new EntityNotFoundException("Debt with id: " + debtId + " was not found."));
         debt.addPayment(paymentMapper.dtoToEntity(paymentDTO));
@@ -58,6 +66,7 @@ public class DebtServiceImpl implements DebtService {
     }
 
     @Override
+    @Transactional
     public boolean deletePayment(Long debtId, Long paymentId) {
         final Debt debt = debtRepository.findById(debtId).orElseThrow(() -> new EntityNotFoundException("Debt with id: " + debtId + " was not found."));
         debt.removePayment(paymentId);

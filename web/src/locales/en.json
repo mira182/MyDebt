@@ -8,6 +8,7 @@
   "debts": {
     "initialDebt": "Initial Debt",
     "currentDebt": "Current Debt",
-    "debtFrom": "Debt From"
+    "debtFrom": "Debt From",
+    "paidDebt": "Already paid"
   }
 }

@@ -38,6 +38,11 @@ public class DebtController {
         return debtService.createDebt(debtDTO);
     }
 
+    @DeleteMapping("/{debtId}")
+    public boolean deleteDebt(@PathVariable long debtId) {
+        return debtService.deleteDebt(debtId);
+    }
+
     @PostMapping("/{debtId}/addPayment")
     public boolean addPaymentForDebt(@PathVariable Long debtId, @RequestBody PaymentDTO paymentDTO) {
         return debtService.addPayment(debtId, paymentDTO);

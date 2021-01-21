@@ -13,6 +13,8 @@ public interface DebtService {
 
     DebtDTO createDebt(DebtDTO debt);
 
+    boolean deleteDebt(long debtId);
+
     boolean addPayment(Long debtId, PaymentDTO paymentDTO);
 
     boolean deletePayment(Long debtId, Long paymentId);
