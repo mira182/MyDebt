@@ -14,6 +14,5 @@ public class PaymentDTO {
 
     private int amount;
 
-    @JsonFormat(pattern="dd/MM/yyyy")
     private LocalDate paymentDate;
 }

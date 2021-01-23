@@ -10,7 +10,9 @@ import store from './store/index';
 import VueRouter from 'vue-router'
 import PageNotFound404 from '@/components/errorPages/404';
 import ServerError500 from '@/components/errorPages/500';
+import BadRequest from '@/components/errorPages/400';
 import Debts from "@/components/Debts";
+import ErrorPage from "@/components/errorPages/ErrorPage";
 
 Vue.config.productionTip = false;
 Vue.http = Vue.prototype.$http = axios;
@@ -25,12 +27,24 @@ const routes = [
     component: Debts
   },
   {
+    path: '/400',
+    name: '400',
+    component: BadRequest,
+    props: true
+  },
+  {
     path: '/404',
     component: PageNotFound404
   },
   {
     path: '/500',
     component: ServerError500
+  },
+  {
+    path: '/error',
+    name: 'error',
+    component: ErrorPage,
+    props: true
   }
 ]
 

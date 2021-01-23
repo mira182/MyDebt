@@ -8,7 +8,7 @@
                     multi-sort
                     class="elevation-1">
                 <template v-slot:item.paymentDate="{ item }">
-                    <span>{{ item.paymentDate }}</span>
+                    <span>{{ item.paymentDate | formatDate }}</span>
                 </template>
                 <template v-slot:item.amount="{ item }">
                     <span>{{ item.amount | formatPrice }} Kc</span>
@@ -34,8 +34,10 @@
 <script>
     import CreatePaymentDialog from "./dialogs/CreatePaymentDialog";
     import DebtRestService from "../services/DebtRestService";
+    import DateUtils from '../utils/dateUtils';
 
     export default {
+        extends: DateUtils,
         name: "Payments",
         components: {CreatePaymentDialog},
         props: ['debtId'],

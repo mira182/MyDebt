@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <h1>500 - Server error</h1>
+    <h1>Error<span v-if="errorMessage"> - {{errorMessage}}</span></h1>
     <v-btn
         elevation="4"
         large
@@ -12,7 +12,8 @@
 
 <script>
 export default {
-  name: "ServerError500"
+  name: "ErrorPage",
+  props: ['errorMessage']
 }
 </script>
 
