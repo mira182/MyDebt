@@ -15,8 +15,8 @@
         <v-tab-item v-for="debt in debts" :key="debt.tab">
           <v-card flat>
             <div v-if="debt">
-              <v-row justify="end" align="center">
-                <v-col offset="1">
+              <v-row justify="space-around">
+                <v-col>
                   <span class="text-h6 blue--text text--darken-3">{{ $t('debts.initialDebt') }}</span>
                   <v-chip class="ma-2">
                     {{ debt.initialDebt | formatPrice }} Kc
@@ -120,7 +120,13 @@ export default {
                 }
                 this.debts.splice(idx, 1);
               }
-          }).catch(reason => console.log(reason));
+          }).catch(() =>
+              this.$store.dispatch('setSnackbar', {
+                show: true,
+                color: 'error',
+                message: "Deleting debt failed."
+              })
+          );
         }
       });
     }

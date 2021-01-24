@@ -15,15 +15,12 @@ api.interceptors.response.use(
 )
 
 const errorHandler = (error) => {
-    // let path = '/error';
     switch (error.response.status) {
         case 400: router.push({ name: '400', params: {requestData: error.response.config.data}}); break;
         case 404: router.push('/404'); break;
         case 500: router.push('/500'); break;
         default: router.push({ name: 'error', params: {errorMessage: error.response.data.error }}); break;
     }
-    // router.push({ path: path, query: { errorMessage: error.response.message }})
-    // router.push({ name: 'error', params: {errorMessage: error.response.message }})
 
     return Promise.reject(error);
 }
