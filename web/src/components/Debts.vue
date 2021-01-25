@@ -6,6 +6,7 @@
     <div id="debts" class="blog-post" v-if="debts != null && debts.length > 0">
       <CreateDebtDialog v-on:save-debt="createDebt($event)"/>
       <v-tabs v-model="tab">
+        <v-tabs-slider></v-tabs-slider>
         <v-tab v-for="debt in debts" :key="debt.title">
           {{ debt.title }}
         </v-tab>
@@ -41,7 +42,7 @@
                   </v-chip>
                 </v-col>
                 <v-col>
-                  <v-btn text @click="deleteDebt(debt.id, tab)">
+                  <v-btn icon @click="deleteDebt(debt.id, tab)">
                     <v-icon dark>delete</v-icon>
                   </v-btn>
                 </v-col>
@@ -136,5 +137,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.one-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 </style>

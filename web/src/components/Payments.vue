@@ -23,11 +23,14 @@
                 </template>
             </v-data-table>
 
-            <v-row justify="end">
-                <v-col cols="12" sm="2">
-                    <CreatePaymentDialog v-on:save-payment="addPayment($event)"/>
-                </v-col>
+      <v-container fluid class="pa-0">
+            <v-row>
+              <v-spacer></v-spacer>
+              <v-col class="text-right">
+                <CreatePaymentDialog v-on:save-payment="addPayment($event)"/>
+              </v-col>
             </v-row>
+      </v-container>
     </div>
 </template>
 
