@@ -3,9 +3,7 @@ package cz.mira.myapps.mydebt.controller;
 import cz.mira.myapps.mydebt.model.dto.PaymentDTO;
 import cz.mira.myapps.mydebt.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,5 +17,10 @@ public class PaymentController {
     @GetMapping
     public List<PaymentDTO> getAllPayments() {
         return paymentService.getAllPayments();
+    }
+
+    @PostMapping("/{paymentId}")
+    public PaymentDTO updatePayment(@PathVariable long paymentId, @RequestBody PaymentDTO paymentDTO) {
+        return paymentService.updatePayment(paymentId, paymentDTO);
     }
 }

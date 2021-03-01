@@ -1,9 +1,9 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="400px">
         <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on">
-                <v-icon dark>mdi-plus</v-icon>
-            </v-btn>
+        <v-icon small class="mr-2" v-bind="attrs" v-on="on">
+            mdi-pencil
+        </v-icon>
         </template>
 
         <v-card>
@@ -11,15 +11,15 @@
                     v-model="valid"
                     lazy-validation>
                 <v-card-title>
-                    <span class="headline">New Payment</span>
+                    <span class="headline">Edit Payment</span>
                 </v-card-title>
                 <v-card-text>
                     <v-container>
                         <v-row>
                             <v-col>
-                                <v-text-field v-model="newPayment.amount" label="Amount*" type="number" suffix="Kc"
+                                <v-text-field v-model="payment.amount" label="Amount*" type="number" suffix="Kc"
                                               :rules="amountRules"></v-text-field>
-                                <DatePicker v-on:date-selected="updatePaymentDate($event)" />
+                                <DatePicker v-bind:date="payment.paymentDate" v-on:date-selected="updatePaymentDate($event)"/>
                             </v-col>
                         </v-row>
                     </v-container>
@@ -38,28 +38,33 @@
 <script>
 import DatePicker from "@/components/DatePicker";
 
-    export default {
-        components: {DatePicker},
-        data() {
-            return {
-                valid: true,
-                dialog: false,
-                amountRules: [
-                    value => !!value || 'Required.',
-                ],
-                newPayment: {},
-            }
+export default {
+    name: "EditPaymentDialog",
+    components: {DatePicker},
+    props: ['payment'],
+    data() {
+        return {
+            valid: true,
+            dialog: false,
+            amountRules: [
+                value => !!value || 'Required.',
+            ]
+        }
+    },
+    methods: {
+        updatePaymentDate(date) {
+            this.payment.paymentDate = date
         },
-        methods: {
-            updatePaymentDate: function(date) {
-                this.newPayment.paymentDate = date;
-            },
-            submit () {
-                if (this.$refs.form.validate()) {
-                    this.$emit('save-payment', this.newPayment);
-                    this.dialog = false;
-                }
+        submit() {
+            if (this.$refs.form.validate()) {
+                this.$emit('save-payment', this.payment)
+                this.dialog = false
             }
-        },
+        }
     }
+}
 </script>
+
+<style scoped>
+
+</style>

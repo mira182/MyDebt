@@ -1,6 +1,5 @@
 package cz.mira.myapps.mydebt.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,7 +22,6 @@ public class DebtDTO {
 
     private String description;
 
-    @JsonFormat(pattern="dd/MM/yyyy")
     private LocalDate debtStartDate;
 
     private List<PaymentDTO> payments;

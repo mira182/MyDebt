@@ -34,7 +34,6 @@ public class DebtController {
 
     @PostMapping
     public DebtDTO createDebt(@RequestBody DebtDTO debtDTO) {
-        log.info("Incoming DTO: {}", debtDTO);
         return debtService.createDebt(debtDTO);
     }
 

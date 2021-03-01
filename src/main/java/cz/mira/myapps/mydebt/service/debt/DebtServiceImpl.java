@@ -27,7 +27,7 @@ public class DebtServiceImpl implements DebtService {
     private final PaymentMapper paymentMapper;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<DebtDTO> getAllDebts() {
         return debtRepository.findAll().stream()
                 .map(debtMapper::entityToDto)
@@ -35,6 +35,7 @@ public class DebtServiceImpl implements DebtService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DebtDTO getDebt(Long debtId) {
         return debtMapper.entityToDto(debtRepository.findById(debtId).orElseThrow(() -> new EntityNotFoundException("Debt with id: " + debtId + " was not found.")));
     }

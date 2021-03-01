@@ -1,12 +1,12 @@
 export default {
     methods: {
-        parseDate (date) {
+        parseDate(date) {
             if (!date) return null;
 
             const [day, month, year] = date.split('-');
             return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
         },
-        formatDate (date) {
+        formatDate(date) {
             if (!date) return null;
 
             const [year, month, day] = date.split('-');
@@ -14,7 +14,7 @@ export default {
         }
     },
     filters: {
-        formatDate (date) {
+        formatDate(date) {
             if (!date) return null;
 
             const [year, month, day] = date.split('-');

@@ -7,4 +7,6 @@ import java.util.List;
 public interface PaymentService {
 
     List<PaymentDTO> getAllPayments();
+
+    PaymentDTO updatePayment(long paymentId, PaymentDTO paymentDTO);
 }
