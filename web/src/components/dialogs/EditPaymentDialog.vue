@@ -1,9 +1,9 @@
 <template>
     <v-dialog v-model="dialog" persistent max-width="400px">
         <template v-slot:activator="{ on, attrs }">
-        <v-icon small class="mr-2" v-bind="attrs" v-on="on">
-            mdi-pencil
-        </v-icon>
+            <v-icon small class="mr-2" v-bind="attrs" v-on="on">
+                mdi-pencil
+            </v-icon>
         </template>
 
         <v-card>
@@ -17,9 +17,9 @@
                     <v-container>
                         <v-row>
                             <v-col>
-                                <v-text-field v-model="payment.amount" label="Amount*" type="number" suffix="Kc"
+                                <v-text-field v-model="editedPayment.amount" label="Amount*" type="number" suffix="Kc"
                                               :rules="amountRules"></v-text-field>
-                                <DatePicker v-bind:date="payment.paymentDate" v-on:date-selected="updatePaymentDate($event)"/>
+                                <DatePicker v-bind:date="editedPayment.paymentDate" v-on:date-selected="updatePaymentDate($event)"/>
                             </v-col>
                         </v-row>
                     </v-container>
@@ -46,18 +46,24 @@ export default {
         return {
             valid: true,
             dialog: false,
+            // editedPayment: JSON.parse(JSON.stringify(this.payment)),
             amountRules: [
                 value => !!value || 'Required.',
             ]
         }
     },
+    computed: {
+        editedPayment() {
+            return Object.assign({}, this.payment)
+        }
+    },
     methods: {
         updatePaymentDate(date) {
-            this.payment.paymentDate = date
+            this.editedPayment.paymentDate = date
         },
         submit() {
             if (this.$refs.form.validate()) {
-                this.$emit('save-payment', this.payment)
+                this.$emit('save-payment', this.editedPayment)
                 this.dialog = false
             }
         }

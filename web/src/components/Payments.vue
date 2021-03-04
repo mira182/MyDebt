@@ -39,10 +39,10 @@
     import EditPaymentDialog from "@/components/dialogs/EditPaymentDialog";
 
     export default {
-        extends: DateUtils,
         name: "Payments",
         components: {EditPaymentDialog, CreatePaymentDialog},
         props: ['debtId'],
+        mixins: [DateUtils],
         data() {
             return {
                 loading: true,
@@ -84,6 +84,10 @@
             },
             editPayment(payment) {
                 DebtRestService.updatePayment(payment.id, payment)
+                        .then(() => {
+                            let itemIndex = this.payments.indexOf(payment)
+                            this.payments.splice(itemIndex, 1, payment)
+                        })
                         .catch(() => {
                             this.$store.dispatch('setSnackbar', {
                                 show: true,

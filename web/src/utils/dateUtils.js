@@ -1,4 +1,4 @@
-export default {
+const DateUtils = {
     methods: {
         parseDate(date) {
             if (!date) return null;
@@ -22,3 +22,5 @@ export default {
         }
     }
 }
+
+export default DateUtils;

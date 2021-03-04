@@ -48,7 +48,7 @@
                                 </v-col>
                             </v-row>
                             <Payments :debt-id="debt.id" v-on:payment-added="refreshDebt(debt.id)"
-                                      v-on:payment-deleted="refreshDebt(debt.id)" payments="payments"/>
+                                      v-on:payment-deleted="refreshDebt(debt.id)" v-on:payment-edited="refreshDebt(debt.id)" payments="payments"/>
                         </div>
                     </v-card>
                 </v-tab-item>
