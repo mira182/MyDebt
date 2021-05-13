@@ -7,13 +7,13 @@
                 :sort-desc="[false, true]"
                 multi-sort
                 class="elevation-1">
-            <template v-slot:item.paymentDate="{ item }">
+            <template v-slot:[`item.paymentDate`]="{ item }">
                 <span>{{ item.paymentDate | formatDate }}</span>
             </template>
-            <template v-slot:item.amount="{ item }">
+            <template v-slot:[`item.amount`]="{ item }">
                 <span>{{ item.amount | formatPrice }} Kc</span>
             </template>
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:[`item.actions`]="{ item }">
                 <EditPaymentDialog v-bind:payment="item" v-on:save-payment="editPayment($event)" />
                 <v-icon small @click="deleteItem(item)">
                     mdi-delete
@@ -92,7 +92,7 @@
                             this.$store.dispatch('setSnackbar', {
                                 show: true,
                                 color: 'error',
-                                message: "Saving payment failed."
+                                message: "Updating payment failed."
                             })
                         })
             },
@@ -110,7 +110,7 @@
                                     this.$store.dispatch('setSnackbar', {
                                         show: true,
                                         color: 'error',
-                                        message: "Saving payment failed."
+                                        message: "Deleting payment failed."
                                     })
                                 })
                     }
