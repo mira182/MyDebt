@@ -9,6 +9,9 @@
                 <v-tabs-slider></v-tabs-slider>
                 <v-tab v-for="debt in debts" :key="debt.title">
                     {{ debt.title }}
+                  <v-btn icon @click="deleteDebt(debt.id, tab)">
+                    <v-icon dark>close</v-icon>
+                  </v-btn>
                 </v-tab>
             </v-tabs>
 
@@ -16,7 +19,7 @@
                 <v-tab-item v-for="debt in debts" :key="debt.tab">
                     <v-card flat>
                         <div v-if="debt">
-                            <v-row justify="space-around">
+                            <v-row class="flex flex-wrap ml-3">
                                 <v-col>
                                     <span class="text-h6 blue--text text--darken-3">{{ $t('debts.initialDebt') }}</span>
                                     <v-chip class="ma-2">
@@ -40,11 +43,6 @@
                                     <v-chip class="ma-2">
                                         {{ debt.debtStartDate }}
                                     </v-chip>
-                                </v-col>
-                                <v-col>
-                                    <v-btn icon @click="deleteDebt(debt.id, tab)">
-                                        <v-icon dark>delete</v-icon>
-                                    </v-btn>
                                 </v-col>
                             </v-row>
                             <Payments :debt-id="debt.id" v-on:payment-added="refreshDebt(debt.id)"
