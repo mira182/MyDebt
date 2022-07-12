@@ -19,7 +19,9 @@ public class DebtController {
 
     @GetMapping
     public List<DebtDTO> getAllDebts() {
-        return debtService.getAllDebts();
+        List<DebtDTO> debts = debtService.getAllDebts();
+        log.debug("Returned debts in controller: {}", debts);
+        return debts;
     }
 
     @GetMapping("/{debtId}")
