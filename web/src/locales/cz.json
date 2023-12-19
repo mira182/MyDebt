@@ -9,6 +9,7 @@
     "initialDebt": "Počáteční Dluh",
     "currentDebt": "Současný Dluh",
     "debtFrom": "Dluh od",
-    "paidDebt": "Splaceno"
+    "paidDebt": "Splaceno",
+    "paidPercentage":  "Splaceno"
   }
 }

@@ -44,6 +44,12 @@
                                         {{ debt.debtStartDate }}
                                     </v-chip>
                                 </v-col>
+                              <v-col>
+                                <span class="text-h6 blue--text text--darken-3">{{ $t('debts.paidPercentage') }}</span>
+                                <v-chip class="ma-2">
+                                  {{ formattedPaidPercentage(debt) }} %
+                                </v-chip>
+                              </v-col>
                             </v-row>
                             <Payments :debt-id="debt.id" v-on:payment-added="refreshDebt(debt.id)"
                                       v-on:payment-deleted="refreshDebt(debt.id)" v-on:payment-edited="refreshDebt(debt.id)" payments="payments"/>
@@ -129,6 +135,9 @@ export default {
                     );
                 }
             });
+        },
+        formattedPaidPercentage: (debt) => {
+          return parseFloat(((debt.initialDebt - debt.currentDebt) / debt.initialDebt) * 100).toFixed(2);
         }
     }
 }

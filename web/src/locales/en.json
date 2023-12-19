@@ -9,6 +9,7 @@
     "initialDebt": "Initial Debt",
     "currentDebt": "Current Debt",
     "debtFrom": "Debt From",
-    "paidDebt": "Already paid"
+    "paidDebt": "Already paid",
+    "paidPercentage":  "Paid percentage"
   }
 }
