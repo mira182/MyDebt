@@ -11,5 +11,5 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     volumes:
-      - "/var/services/homes/mira/Drive/Apps/MyDebt/logs:/usr/app/logs"
+      - "/volume2/Apps/MyDebt/logs:/usr/app/logs"
     restart: unless-stopped
