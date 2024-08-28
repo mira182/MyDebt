@@ -86,7 +86,8 @@ export default {
     },
     methods: {
         refreshDebt(debtId) {
-            DebtRestService.getDebt(debtId).then(result => {
+          console.log("Debt id:", debtId)
+            DebtRestService.getDebt(1).then(result => {
                 if (result) {
                     this.debts.find(debt => debt.id = result.data.id).currentDebt = result.data.currentDebt;
                 }
