@@ -77,7 +77,8 @@
                 })
             },
             getPaymentsForDebt(debtId) {
-                DebtRestService.getPaymentsForDebt(debtId).then(response => {
+              //TODO change 1 -> debtId
+                DebtRestService.getPaymentsForDebt(1).then(response => {
                     this.payments = response.data;
                     this.loading = false;
                 })
