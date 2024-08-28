@@ -79,7 +79,7 @@
             getPaymentsForDebt(debtId) {
               console.log("Debt ID: ", debtId)
               //TODO change 1 -> debtId
-                DebtRestService.getPaymentsForDebt(1).then(response => {
+                DebtRestService.getPaymentsForDebt(debtId).then(response => {
                     this.payments = response.data;
                     this.loading = false;
                 })
