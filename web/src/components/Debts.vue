@@ -86,6 +86,7 @@ export default {
     },
     methods: {
         refreshDebt(debtId) {
+          // TODO change 1 -> debtId
           console.log("Debt id:", debtId)
             DebtRestService.getDebt(1).then(result => {
                 if (result) {

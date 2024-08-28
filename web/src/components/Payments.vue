@@ -50,6 +50,7 @@
             }
         },
         mounted() {
+          // TODO change 1 -> this.debtId
             this.getPaymentsForDebt(1)
         },
         computed: {
@@ -79,7 +80,7 @@
             getPaymentsForDebt(debtId) {
               console.log("Debt ID: ", debtId)
               //TODO change 1 -> debtId
-                DebtRestService.getPaymentsForDebt(debtId).then(response => {
+                DebtRestService.getPaymentsForDebt(1).then(response => {
                     this.payments = response.data;
                     this.loading = false;
                 })
