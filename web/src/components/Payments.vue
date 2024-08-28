@@ -50,7 +50,7 @@
             }
         },
         mounted() {
-            this.getPaymentsForDebt(this.debtId)
+            this.getPaymentsForDebt(1)
         },
         computed: {
             headers() {
