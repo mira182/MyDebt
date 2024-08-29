@@ -50,7 +50,6 @@
             }
         },
         mounted() {
-            console.log("Debt ID in payments:", this.debtId)
             this.getPaymentsForDebt(this.debtId)
         },
         computed: {

@@ -11,11 +11,9 @@ export default {
         return api.delete('debts/' + debtId);
     },
     getDebt(debtId) {
-        console.log("Debt ID:",debtId)
         return api.get('debts/' + debtId);
     },
     getPaymentsForDebt(debtId) {
-        console.log("Debt ID:",debtId)
         return api.get('debts/' + debtId + '/payments');
     },
     createPayment(debtId, payment) {

@@ -29,12 +29,8 @@ public class DebtServiceImpl implements DebtService {
     @Override
     @Transactional(readOnly = true)
     public List<DebtDTO> getAllDebts() {
-        List<Debt> debts = debtRepository.findAll();
-        debts.forEach(debt -> log.debug("Debts from DB: {}", debt));
-
-        return debts.stream()
+        return debtRepository.findAll().stream()
                 .map(debtMapper::entityToDto)
-                .peek(debtDto -> log.debug("Debt DTO: {}", debtDto))
                 .collect(Collectors.toList());
     }
 
