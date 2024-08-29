@@ -3,6 +3,7 @@ package cz.mira.myapps.mydebt.model.entity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode
 public class Debt {
 
