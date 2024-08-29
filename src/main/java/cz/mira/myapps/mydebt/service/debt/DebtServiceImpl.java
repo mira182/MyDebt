@@ -30,7 +30,7 @@ public class DebtServiceImpl implements DebtService {
     @Transactional(readOnly = true)
     public List<DebtDTO> getAllDebts() {
         List<Debt> debts = debtRepository.findAll();
-        log.debug("Debts from DB: {}", debts.toString());
+        debts.forEach(debt -> log.debug("Debts from DB: {}", debt));
 
         return debts.stream()
                 .map(debtMapper::entityToDto)
