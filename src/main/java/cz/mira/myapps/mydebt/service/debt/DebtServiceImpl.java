@@ -29,7 +29,10 @@ public class DebtServiceImpl implements DebtService {
     @Override
     @Transactional(readOnly = true)
     public List<DebtDTO> getAllDebts() {
-        return debtRepository.findAll().stream()
+        List<Debt> debts = debtRepository.findAll();
+        log.debug("Debts from DB: {}", debts.toString());
+
+        return debts.stream()
                 .map(debtMapper::entityToDto)
                 .collect(Collectors.toList());
     }

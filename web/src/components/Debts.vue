@@ -110,6 +110,9 @@ export default {
             DebtRestService.getDebts().then(response => {
                 if (response.status === 200) {
                     this.debts = response.data;
+                } else {
+                  console.log("Error getting debts")
+                  console.log("Response:", response)
                 }
             });
         },
