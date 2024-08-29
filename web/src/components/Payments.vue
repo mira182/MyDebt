@@ -50,8 +50,8 @@
             }
         },
         mounted() {
-          // TODO change 1 -> this.debtId
-            this.getPaymentsForDebt(1)
+            console.log("Debt ID in payments:", this.debtId)
+            this.getPaymentsForDebt(this.debtId)
         },
         computed: {
             headers() {

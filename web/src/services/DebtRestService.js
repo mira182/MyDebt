@@ -11,14 +11,12 @@ export default {
         return api.delete('debts/' + debtId);
     },
     getDebt(debtId) {
-        //TODO change 1 -> debtId
         console.log("Debt ID:",debtId)
-        return api.get('debts/' + "1");
+        return api.get('debts/' + debtId);
     },
     getPaymentsForDebt(debtId) {
         console.log("Debt ID:",debtId)
-        //TODO change 1 -> debtId
-        return api.get('debts/' + "1" + '/payments');
+        return api.get('debts/' + debtId + '/payments');
     },
     createPayment(debtId, payment) {
         return api.post('debts/' + debtId + '/addPayment', payment);

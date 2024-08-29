@@ -83,6 +83,7 @@ export default {
     },
     mounted() {
         this.debts = this.getDebts();
+        console.log("Debts:", this.debts)
     },
     methods: {
         refreshDebt(debtId) {
