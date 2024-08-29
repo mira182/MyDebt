@@ -34,6 +34,7 @@ public class DebtServiceImpl implements DebtService {
 
         return debts.stream()
                 .map(debtMapper::entityToDto)
+                .peek(debtDto -> log.debug("Debt DTO: {}", debtDto))
                 .collect(Collectors.toList());
     }
 
