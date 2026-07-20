@@ -8,10 +8,8 @@
 target/
 logs/
 
-# Frontend build output & tooling (rebuilt inside the container by frontend-maven-plugin)
-web/node_modules/
-web/node/
-web/dist/
+# Frontend is built by its own image (web/Dockerfile) — not needed here
+web/
 
 # Secrets must never enter an image layer
 .env

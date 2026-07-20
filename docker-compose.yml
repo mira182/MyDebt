@@ -1,4 +1,5 @@
 services:
+  # DATABASE — dedicated to MyDebt, not published to the host
   mydebt-postgres:
     image: postgres:16-alpine
     container_name: mydebt-postgres
@@ -17,11 +18,27 @@ services:
       retries: 5
     restart: unless-stopped
 
-  # APP — serves both the API and the built-in Vue frontend
-  mydebt:
+  # FRONTEND — the only service published to the host.
+  # nginx serves the Vue bundle and proxies /api/ to the backend.
+  mydebt-frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    image: mydebt-frontend
+    container_name: mydebt-frontend
+    depends_on:
+      - mydebt-backend
+    ports:
+      - "8081:80"
+    networks:
+      - mydebt-frontend
+    restart: unless-stopped
+
+  # BACKEND — not published; reached only via the frontend nginx proxy
+  mydebt-backend:
     build: ./
-    image: mydebt
-    container_name: mydebt
+    image: mydebt-backend
+    container_name: mydebt-backend
     depends_on:
       mydebt-postgres:
         condition: service_healthy
@@ -32,14 +49,15 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://mydebt-postgres:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "8081:8081"
     volumes:
       - "/volume2/Apps/MyDebt/logs:/usr/app/logs"
     networks:
       - mydebt-backend
+      - mydebt-frontend
     restart: unless-stopped
 
 networks:
   mydebt-backend:
+    driver: bridge
+  mydebt-frontend:
     driver: bridge

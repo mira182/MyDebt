@@ -1,13 +1,3 @@
-# Pull-based deployment: the image is built in GitHub Actions and pushed to GHCR;
-# the NAS only pulls it. Watchtower auto-updates the app container.
-#
-# Usage on the NAS (keep your .env beside this file):
-#   docker compose -f docker-compose.registry.yaml pull
-#   docker compose -f docker-compose.registry.yaml up -d
-#
-# If the GHCR package is private, run `docker login ghcr.io` first (PAT with
-# read:packages) so both the pull above and Watchtower can authenticate.
-
 services:
   # DATABASE — dedicated to MyDebt, not published to the host.
   # No watchtower label: the DB must never be auto-updated.
@@ -29,10 +19,25 @@ services:
       retries: 5
     restart: unless-stopped
 
-  # APP — pulled from GHCR; serves both the API and the built-in Vue frontend.
-  mydebt:
-    image: ghcr.io/mira182/mydebt:latest
-    container_name: mydebt
+  # FRONTEND — pulled from GHCR; the only service published to the host.
+  # nginx serves the Vue bundle and proxies /api/ to the backend.
+  mydebt-frontend:
+    image: ghcr.io/mira182/mydebt-frontend:latest
+    container_name: mydebt-frontend
+    depends_on:
+      - mydebt-backend
+    ports:
+      - "8081:80"
+    networks:
+      - mydebt-frontend
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  # BACKEND — pulled from GHCR; not published, reached only via the frontend proxy.
+  mydebt-backend:
+    image: ghcr.io/mira182/mydebt-backend:latest
+    container_name: mydebt-backend
     depends_on:
       mydebt-postgres:
         condition: service_healthy
@@ -43,27 +48,21 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://mydebt-postgres:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "8081:8081"
     volumes:
       - "/volume2/Apps/MyDebt/logs:/usr/app/logs"
     networks:
       - mydebt-backend
+      - mydebt-frontend
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
-  # WATCHTOWER — polls GHCR and recreates the labelled app container on new images.
-  # NOTE: Watchtower watches the whole Docker daemon, not just this compose stack.
-  # If the MyWorkouts stack's watchtower already runs on this NAS, it will pick up
-  # the labelled mydebt container too — in that case delete this service to avoid
-  # running two watchtowers side by side.
   watchtower:
     image: containrrr/watchtower
     container_name: mydebt-watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      # Only needed if the GHCR package is private (holds the ghcr.io login):
+      # Only needed if the GHCR packages are private (holds the ghcr.io login):
       # - /volume2/Apps/MyDebt/docker-config.json:/config.json:ro
     environment:
       - WATCHTOWER_LABEL_ENABLE=true    # only watch the labelled app containers (not Postgres)
@@ -73,4 +72,6 @@ services:
 
 networks:
   mydebt-backend:
+    driver: bridge
+  mydebt-frontend:
     driver: bridge

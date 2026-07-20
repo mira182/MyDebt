@@ -1,0 +1,4 @@
+# Keeps the frontend image build context small and reproducible.
+node_modules/
+node/
+dist/
