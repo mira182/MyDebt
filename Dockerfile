@@ -1,10 +1,23 @@
-FROM openjdk:8-jre-alpine
+FROM maven:3.9.6-eclipse-temurin-11 AS buildstage
 
-COPY target/mydebt-0.0.1-SNAPSHOT.jar /usr/app/
 WORKDIR /usr/app
-RUN apk --update add fontconfig ttf-dejavu
-RUN mkdir -p logs/
+
+COPY . .
+
+RUN mvn -DskipTests clean package
+
+
+FROM eclipse-temurin:11-jre-jammy AS runstage
+
 WORKDIR /usr/app
+
+COPY --from=buildstage /usr/app/target/mydebt-0.0.1-SNAPSHOT.jar .
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends fontconfig fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p logs/
+
 EXPOSE 8081
 
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "/usr/app/mydebt-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/usr/app/mydebt-0.0.1-SNAPSHOT.jar"]

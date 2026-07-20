@@ -1,15 +1,45 @@
-version: "3.1"
 services:
-  # APP*****************************************
+  mydebt-postgres:
+    image: postgres:16-alpine
+    container_name: mydebt-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - "/volume2/Apps/MyDebt/pgdata:/var/lib/postgresql/data"
+    networks:
+      - mydebt-backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # APP — serves both the API and the built-in Vue frontend
   mydebt:
     build: ./
     image: mydebt
-    network_mode: host
     container_name: mydebt
+    depends_on:
+      mydebt-postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mydebt-postgres:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
     ports:
       - "8081:8081"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
     volumes:
       - "/volume2/Apps/MyDebt/logs:/usr/app/logs"
+    networks:
+      - mydebt-backend
     restart: unless-stopped
+
+networks:
+  mydebt-backend:
+    driver: bridge
