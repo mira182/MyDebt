@@ -3,6 +3,7 @@ package cz.mira.myapps.mydebt.controller;
 import cz.mira.myapps.mydebt.model.dto.DebtDTO;
 import cz.mira.myapps.mydebt.model.dto.PaymentDTO;
 import cz.mira.myapps.mydebt.service.debt.DebtService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,13 @@ public class DebtController {
     }
 
     @PostMapping
-    public DebtDTO createDebt(@RequestBody DebtDTO debtDTO) {
+    public DebtDTO createDebt(@Valid @RequestBody DebtDTO debtDTO) {
         return debtService.createDebt(debtDTO);
+    }
+
+    @PutMapping("/{debtId}")
+    public DebtDTO updateDebt(@PathVariable Long debtId, @Valid @RequestBody DebtDTO debtDTO) {
+        return debtService.updateDebt(debtId, debtDTO);
     }
 
     @DeleteMapping("/{debtId}")
@@ -45,7 +51,7 @@ public class DebtController {
     }
 
     @PostMapping("/{debtId}/addPayment")
-    public boolean addPaymentForDebt(@PathVariable Long debtId, @RequestBody PaymentDTO paymentDTO) {
+    public boolean addPaymentForDebt(@PathVariable Long debtId, @Valid @RequestBody PaymentDTO paymentDTO) {
         return debtService.addPayment(debtId, paymentDTO);
     }
 

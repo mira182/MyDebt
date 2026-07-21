@@ -1,94 +1,107 @@
 <template>
     <div>
-        <div v-if="debts != null && debts.length <= 0">
+        <!-- Rendered into the app bar, but kept here so it keeps this component's
+             save handler. `defer` lets the target element exist first. -->
+        <Teleport defer to="#app-bar-actions">
             <CreateDebtDialog v-on:save-debt="createDebt($event)"/>
-        </div>
-        <div id="debts" class="blog-post" v-if="debts != null && debts.length > 0">
-            <CreateDebtDialog v-on:save-debt="createDebt($event)"/>
-            <v-tabs v-model="tab">
-                <v-tabs-slider></v-tabs-slider>
-                <v-tab v-for="debt in debts" :key="debt.title">
-                    {{ debt.title }}
-                  <v-btn icon @click="deleteDebt(debt.id, tab)">
-                    <v-icon dark>close</v-icon>
-                  </v-btn>
+        </Teleport>
+
+        <div id="debts" v-if="debts != null && debts.length > 0">
+            <v-tabs v-model="tab" show-arrows>
+                <v-tab v-for="debt in sortedDebts" :key="debt.id" :value="debt.id"
+                       class="debt-tab" :class="{ 'debt-tab--paid': isPaidOff(debt) }">
+                    <span class="debt-tab__progress" :title="roundedPercentage(debt) + ' % paid'">
+                        <span class="debt-tab__progress-fill" :style="{ width: paidPercentage(debt) + '%' }"></span>
+                    </span>
+                    <span class="debt-tab__label">
+                        <v-icon v-if="isPaidOff(debt)" size="x-small" color="success" class="mr-1">mdi-check-circle</v-icon>
+                        {{ debt.title }}
+                    </span>
+                    <span class="debt-tab__amount">
+                        {{ $formatPrice(paidAmount(debt)) }} / {{ $formatPrice(debt.initialDebt) }} Kč ({{ roundedPercentage(debt) }} %)
+                    </span>
                 </v-tab>
             </v-tabs>
 
-            <v-tabs-items v-model="tab">
-                <v-tab-item v-for="debt in debts" :key="debt.tab">
-                    <v-card flat>
-                        <div v-if="debt">
-                            <v-row class="flex flex-wrap ml-3">
-                                <v-col>
-                                    <span class="text-h6 blue--text text--darken-3">{{ $t('debts.initialDebt') }}</span>
-                                    <v-chip class="ma-2">
-                                        {{ debt.initialDebt | formatPrice }} Kc
-                                    </v-chip>
-                                </v-col>
-                                <v-col>
-                                    <span class="text-h6 blue--text text--darken-3">{{ $t('debts.currentDebt') }}</span>
-                                    <v-chip class="ma-2">
-                                        {{ debt.currentDebt | formatPrice }} Kc
-                                    </v-chip>
-                                </v-col>
-                                <v-col>
-                                    <span class="text-h6 blue--text text--darken-3">{{ $t('debts.paidDebt') }}</span>
-                                    <v-chip class="ma-2">
-                                        {{ debt.initialDebt - debt.currentDebt | formatPrice }} Kc
-                                    </v-chip>
-                                </v-col>
-                                <v-col>
-                                    <span class="text-h6 blue--text text--darken-3">{{ $t('debts.debtFrom') }}</span>
-                                    <v-chip class="ma-2">
-                                        {{ debt.debtStartDate }}
-                                    </v-chip>
-                                </v-col>
-                              <v-col>
-                                <span class="text-h6 blue--text text--darken-3">{{ $t('debts.paidPercentage') }}</span>
-                                <v-chip class="ma-2">
-                                  {{ formattedPaidPercentage(debt) }} %
-                                </v-chip>
-                              </v-col>
-                            </v-row>
-                            <Payments :debt-id="debt.id" v-on:payment-added="refreshDebt(debt.id)"
-                                      v-on:payment-deleted="refreshDebt(debt.id)" v-on:payment-edited="refreshDebt(debt.id)" payments="payments"/>
+            <v-window v-model="tab">
+                <v-window-item v-for="debt in sortedDebts" :key="debt.id" :value="debt.id">
+                    <v-card v-if="debt" class="pa-4">
+                        <div class="summary-head">
+                            <div class="summary-group">
+                                <h3 class="summary-title">
+                                    {{ $t('debts.summary') }}
+                                    <span v-if="isPaidOff(debt)" class="paid-badge">
+                                        <v-icon size="x-small" color="success">mdi-check</v-icon> {{ $t('debts.paidOff') }}
+                                    </span>
+                                </h3>
+                                <div class="summary-line">
+                                    <span>{{ $t('debts.debtAmount') }}: <strong>{{ $formatPrice(debt.initialDebt) }} Kč</strong></span>
+                                    <span>{{ $t('debts.paid') }}: <strong>{{ $formatPrice(paidAmount(debt)) }} Kč</strong> ({{ roundedPercentage(debt) }} %)</span>
+                                    <span :class="{ ok: isPaidOff(debt) }">{{ $t('debts.remaining') }}: <strong>{{ $formatPrice(remainingAmount(debt)) }} Kč</strong></span>
+                                    <span>{{ $t('debts.created') }}: <strong>{{ debt.debtStartDate }}</strong></span>
+                                </div>
+                                <p v-if="debt.description" class="summary-description">{{ debt.description }}</p>
+                            </div>
+
+                            <div class="summary-actions">
+                                <CreatePaymentDialog v-on:save-payment="addPayment(debt.id, $event)"/>
+                                <EditDebtDialog v-bind:debt="debt" v-on:save-debt="updateDebt($event)"/>
+                                <v-btn variant="text" size="small" color="error" @click="deleteDebt(debt)">
+                                    <v-icon size="small" class="mr-1">mdi-delete</v-icon>{{ $t('debts.deleteDebt') }}
+                                </v-btn>
+                            </div>
                         </div>
+
+                        <Payments class="mt-4" :debt-id="debt.id" :reload-key="reloadKeyFor(debt.id)"
+                                  v-on:payment-deleted="refreshDebt(debt.id)"
+                                  v-on:payment-edited="refreshDebt(debt.id)"/>
                     </v-card>
-                </v-tab-item>
-            </v-tabs-items>
+                </v-window-item>
+            </v-window>
         </div>
     </div>
 </template>
 
 <script>
-import Payments from "./Payments";
+import Payments from "./Payments.vue";
 import DebtRestService from "../services/DebtRestService";
-import CreateDebtDialog from "@/components/dialogs/CreateDebtDialog";
-import Vue from "vue";
-
-Vue.filter('formatPrice', function (value) {
-    let val = (value / 1).toFixed(0);
-    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-});
+import CreateDebtDialog from "@/components/dialogs/CreateDebtDialog.vue";
+import CreatePaymentDialog from "@/components/dialogs/CreatePaymentDialog.vue";
+import EditDebtDialog from "@/components/dialogs/EditDebtDialog.vue";
 
 export default {
     name: 'Debts',
-    components: {Payments, CreateDebtDialog},
+    components: {Payments, CreateDebtDialog, CreatePaymentDialog, EditDebtDialog},
     data() {
         return {
             tab: null,
-            debts: null
+            debts: null,
+            // Bumped per debt id to tell the matching Payments table to reload
+            // after a payment is added from the summary panel.
+            reloadKeys: {}
+        }
+    },
+    computed: {
+        // Unpaid first (oldest created first), fully paid ones pushed to the end.
+        // debtStartDate is an ISO date, so it sorts chronologically as a string.
+        sortedDebts() {
+            if (!this.debts) return [];
+            return [...this.debts].sort((a, b) => {
+                const paidDiff = (this.isPaidOff(a) ? 1 : 0) - (this.isPaidOff(b) ? 1 : 0);
+                if (paidDiff !== 0) return paidDiff;
+                return (a.debtStartDate || '').localeCompare(b.debtStartDate || '');
+            });
         }
     },
     mounted() {
-        this.debts = this.getDebts();
+        this.getDebts();
     },
     methods: {
         refreshDebt(debtId) {
             DebtRestService.getDebt(debtId).then(result => {
-                if (result) {
-                    this.debts.find(debt => debt.id = result.data.id).currentDebt = result.data.currentDebt;
+                if (result && result.data) {
+                    const idx = this.debts.findIndex(d => d.id === result.data.id);
+                    if (idx !== -1) this.debts[idx] = result.data;
                 }
             });
         },
@@ -97,55 +110,178 @@ export default {
                 if (response) {
                     this.getDebts();
                 }
-            }).catch(() => {
-                this.$store.dispatch('setSnackbar', {
-                    show: true,
-                    color: 'error',
-                    message: "Saving debt failed."
-                });
-            });
+            }).catch(() => this.notifyError("Saving debt failed."));
+        },
+        updateDebt(debt) {
+            DebtRestService.updateDebt(debt.id, debt).then(response => {
+                if (response && response.data) {
+                    const idx = this.debts.findIndex(d => d.id === response.data.id);
+                    if (idx !== -1) this.debts[idx] = response.data;
+                }
+            }).catch(() => this.notifyError("Updating debt failed."));
         },
         getDebts() {
             DebtRestService.getDebts().then(response => {
                 if (response.status === 200) {
                     this.debts = response.data;
+                    if (this.debts.length && !this.debts.find(d => d.id === this.tab)) {
+                        this.tab = this.sortedDebts[0].id;
+                    }
                 } else {
-                  console.log("Error getting debts")
-                  console.log("Response:", response)
+                    console.log("Error getting debts");
+                    console.log("Response:", response);
                 }
             });
         },
-        deleteDebt(debtId, idx) {
+        addPayment(debtId, payment) {
+            DebtRestService.createPayment(debtId, payment).then(response => {
+                if (response) {
+                    this.refreshDebt(debtId);
+                    this.bumpReload(debtId);
+                }
+            }).catch(() => this.notifyError("Saving payment failed."));
+        },
+        deleteDebt(debt) {
             this.$confirm('Do you really want to delete debt?', {title: 'Warning'}).then(res => {
                 if (res) {
-                    DebtRestService.deleteDebt(debtId).then(deleted => {
+                    DebtRestService.deleteDebt(debt.id).then(deleted => {
                         if (deleted) {
-                            if (this.debts.length === 1) { // if we delete the only tab, none active anymore
-                                this.active = null
-                            } else if (idx < this.active) { // if we delete to the left of active, move one to the left
-                                this.active--
-                            } else if (idx === this.active && idx === this.debts.length - 1) { // if we delete the active and it was the last one, move one to the left, else ignore, as the next one will become the active one
-                                this.active--
+                            const idx = this.debts.findIndex(d => d.id === debt.id);
+                            if (idx !== -1) this.debts.splice(idx, 1);
+                            if (!this.debts.find(d => d.id === this.tab)) {
+                                this.tab = this.debts.length ? this.sortedDebts[0].id : null;
                             }
-                            this.debts.splice(idx, 1);
                         }
-                    }).catch(() =>
-                            this.$store.dispatch('setSnackbar', {
-                                show: true,
-                                color: 'error',
-                                message: "Deleting debt failed."
-                            })
-                    );
+                    }).catch(() => this.notifyError("Deleting debt failed."));
                 }
             });
         },
-        formattedPaidPercentage: (debt) => {
-          return parseFloat(((debt.initialDebt - debt.currentDebt) / debt.initialDebt) * 100).toFixed(2);
+        bumpReload(debtId) {
+            this.reloadKeys[debtId] = (this.reloadKeys[debtId] || 0) + 1;
+        },
+        reloadKeyFor(debtId) {
+            return this.reloadKeys[debtId] || 0;
+        },
+        isPaidOff(debt) {
+            return debt.currentDebt <= 0;
+        },
+        paidAmount(debt) {
+            return debt.initialDebt - debt.currentDebt;
+        },
+        remainingAmount(debt) {
+            return Math.max(0, debt.currentDebt);
+        },
+        paidPercentage(debt) {
+            if (!debt.initialDebt) return 0;
+            const p = ((debt.initialDebt - debt.currentDebt) / debt.initialDebt) * 100;
+            return Math.min(100, Math.max(0, p));
+        },
+        roundedPercentage(debt) {
+            return Math.round(this.paidPercentage(debt));
+        },
+        notifyError(message) {
+            this.$store.dispatch('setSnackbar', {show: true, color: 'error', message});
         }
     }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.debt-tab {
+    min-height: 60px;
+    text-transform: none;
+    position: relative;
+}
+
+.debt-tab :deep(.v-btn__content) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.debt-tab__label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.2;
+}
+
+.debt-tab__amount {
+    font-size: 0.78rem;
+    opacity: 0.65;
+}
+
+.debt-tab__progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.debt-tab__progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 4px;
+    background: #6366f1;
+    transition: width 0.3s ease;
+}
+
+/* Summary panel */
+.summary-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.summary-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+}
+
+.paid-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4caf50;
+    background: rgba(76, 175, 80, 0.12);
+    border-radius: 12px;
+    padding: 2px 10px;
+}
+
+.summary-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.summary-line .ok strong {
+    color: #4caf50;
+}
+
+.summary-description {
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+.summary-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+}
 </style>

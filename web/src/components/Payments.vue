@@ -3,79 +3,60 @@
         <v-data-table
                 :headers="headers"
                 :items="payments"
-                :sort-by="['paymentDate']"
-                :sort-desc="[true]"
+                :sort-by="sortBy"
                 multi-sort
                 class="elevation-1">
-            <template v-slot:[`item.paymentDate`]="{ item }">
-                <span>{{ item.paymentDate | formatDate }}</span>
+            <template #item.paymentDate="{ item }">
+                <span>{{ $formatDate(item.paymentDate) }}</span>
             </template>
-            <template v-slot:[`item.amount`]="{ item }">
-                <span>{{ item.amount | formatPrice }} Kc</span>
+            <template #item.amount="{ item }">
+                <span>{{ $formatPrice(item.amount) }} Kč</span>
             </template>
-            <template v-slot:[`item.actions`]="{ item }">
+            <template #item.actions="{ item }">
                 <EditPaymentDialog v-bind:payment="item" v-on:save-payment="editPayment($event)" />
-                <v-icon small @click="deleteItem(item)">
+                <v-icon size="small" @click="deleteItem(item)">
                     mdi-delete
                 </v-icon>
             </template>
         </v-data-table>
-
-        <v-container fluid class="pa-0">
-            <v-row>
-                <v-spacer></v-spacer>
-                <v-col class="text-right">
-                    <CreatePaymentDialog v-on:save-payment="addPayment($event)"/>
-                </v-col>
-            </v-row>
-        </v-container>
     </div>
 </template>
 
 <script>
-    import CreatePaymentDialog from "./dialogs/CreatePaymentDialog";
     import DebtRestService from "../services/DebtRestService";
-    import DateUtils from '../utils/dateUtils';
-    import EditPaymentDialog from "@/components/dialogs/EditPaymentDialog";
+    import EditPaymentDialog from "@/components/dialogs/EditPaymentDialog.vue";
 
     export default {
         name: "Payments",
-        components: {EditPaymentDialog, CreatePaymentDialog},
-        props: ['debtId'],
-        mixins: [DateUtils],
+        components: {EditPaymentDialog},
+        // reloadKey is bumped by the parent to trigger a reload after a payment
+        // is added from the debt summary panel.
+        props: ['debtId', 'reloadKey'],
         data() {
             return {
                 loading: true,
-                payments: null
+                payments: null,
+                sortBy: [{key: 'paymentDate', order: 'desc'}]
             }
         },
         mounted() {
             this.getPaymentsForDebt(this.debtId)
         },
+        watch: {
+            reloadKey() {
+                this.getPaymentsForDebt(this.debtId)
+            }
+        },
         computed: {
             headers() {
                 return [
-                    {text: this.$t('payments.paymentDate'), value: 'paymentDate'},
-                    {text: this.$t('payments.amount'), value: 'amount'},
-                    {text: this.$t('payments.actions'), value: 'actions', sortable: false},
+                    {title: this.$t('payments.paymentDate'), key: 'paymentDate'},
+                    {title: this.$t('payments.amount'), key: 'amount'},
+                    {title: this.$t('payments.actions'), key: 'actions', sortable: false},
                 ];
             }
         },
         methods: {
-            addPayment(payment) {
-                DebtRestService.createPayment(this.debtId, payment).then(response => {
-                    if (response) {
-                        this.getPaymentsForDebt(this.debtId)
-                        this.$emit('payment-added')
-                    }
-                }).catch(() => {
-                    this.$store.dispatch('setSnackbar', {
-                        show: true,
-                        color: 'error',
-                        message: "Saving payment failed."
-                    })
-                })
-            },
             getPaymentsForDebt(debtId) {
                 DebtRestService.getPaymentsForDebt(debtId).then(response => {
                     this.payments = response.data;
@@ -85,8 +66,9 @@
             editPayment(payment) {
                 DebtRestService.updatePayment(payment.id, payment)
                         .then(() => {
-                            let itemIndex = this.payments.indexOf(payment)
-                            this.payments.splice(itemIndex, 1, payment)
+                            const idx = this.payments.findIndex(p => p.id === payment.id);
+                            if (idx !== -1) this.payments.splice(idx, 1, payment);
+                            this.$emit('payment-edited');
                         })
                         .catch(() => {
                             this.$store.dispatch('setSnackbar', {
@@ -119,7 +101,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>

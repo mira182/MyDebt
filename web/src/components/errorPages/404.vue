@@ -3,8 +3,7 @@
         <h1>404 - Page not found</h1>
         <v-btn
                 elevation="4"
-                large
-                raised
+                size="large"
                 @click="$router.push('/')"
         >HOME
         </v-btn>
@@ -16,7 +15,3 @@ export default {
     name: "PageNotFound404"
 }
 </script>
-
-<style scoped>
-
-</style>

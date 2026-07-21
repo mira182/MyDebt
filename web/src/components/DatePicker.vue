@@ -1,58 +1,72 @@
 <template>
-    <v-menu
-            v-model="menu"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto"
-    >
-        <template v-slot:activator="{ on, attrs }">
+    <v-menu v-model="menu" :close-on-content-click="false" transition="scale-transition">
+        <template v-slot:activator="{ props }">
             <v-text-field
-                    v-model="dateFormatted"
-                    label="Date"
-                    hint="DD-MM-YYYY format"
+                    :model-value="displayDate"
+                    :label="label"
+                    :rules="rules"
+                    hint="DD-MM-YYYY"
                     persistent-hint
-                    append-icon="mdi-calendar"
                     readonly
-                    v-bind="attrs"
-                    v-on="on"
+                    append-inner-icon="mdi-calendar"
+                    v-bind="props"
             ></v-text-field>
         </template>
         <v-date-picker
-                v-model="inputDate"
-                no-title
-                @input="menu = false"
+                v-model="pickerDate"
+                hide-header
+                @update:model-value="menu = false"
         ></v-date-picker>
     </v-menu>
 </template>
 
 <script>
-import DateUtils from "@/utils/dateUtils";
-
 export default {
     name: "DatePicker",
-    mixins: [DateUtils],
-    props: ['date'],
+    props: {
+        date: String,
+        label: {type: String, default: 'Date'},
+        rules: {type: Array, default: () => []}
+    },
     data() {
         return {
             menu: false,
-            inputDate: this.date
+            pickerDate: this.parseInput(this.date)
         }
     },
     computed: {
-        dateFormatted() {
-            return this.formatDate(this.inputDate)
+        displayDate() {
+            if (!this.pickerDate) return '';
+            const d = this.pickerDate;
+            return `${this.pad(d.getDate())}-${this.pad(d.getMonth() + 1)}-${d.getFullYear()}`;
         }
     },
     watch: {
-        inputDate() {
-            this.$emit('date-selected', this.inputDate)
+        // Follow the prop when the parent swaps the value in or clears it
+        // (form reset after saving, or an edit dialog opening on another row).
+        date(val) {
+            const current = this.pickerDate ? this.toIso(this.pickerDate) : null;
+            if ((val || null) !== current) {
+                this.pickerDate = this.parseInput(val);
+            }
+        },
+        pickerDate(val) {
+            this.$emit('date-selected', val ? this.toIso(val) : null);
+        }
+    },
+    methods: {
+        pad(n) {
+            return String(n).padStart(2, '0');
+        },
+        parseInput(s) {
+            if (!s) return null;
+            // Build a local Date to avoid the UTC off-by-one from new Date('yyyy-mm-dd').
+            const [y, m, d] = s.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        },
+        toIso(d) {
+            return `${d.getFullYear()}-${this.pad(d.getMonth() + 1)}-${this.pad(d.getDate())}`;
         }
     }
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -1,13 +1,12 @@
-FROM node:14-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /usr/src/app
 
-# Install dependencies from the committed lockfile for reproducible builds.
 # Copying package files first keeps this layer cached when only source changes.
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json ./
+RUN npm install
 
-# Copy the rest of the application and build the production bundle
+# Copy the rest of the application and build the production bundle (Vite -> dist/)
 COPY . .
 RUN npm run build
 

@@ -3,8 +3,7 @@
         <h1>Error<span v-if="errorMessage"> - {{ errorMessage }}</span></h1>
         <v-btn
                 elevation="4"
-                large
-                raised
+                size="large"
                 @click="$router.push('/')"
         >HOME
         </v-btn>
@@ -14,10 +13,10 @@
 <script>
 export default {
     name: "ErrorPage",
-    props: ['errorMessage']
+    computed: {
+        errorMessage() {
+            return this.$store.state.error.errorMessage;
+        }
+    }
 }
 </script>
-
-<style scoped>
-
-</style>

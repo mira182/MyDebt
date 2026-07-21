@@ -1,15 +1,17 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from 'vuex'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+export default createStore({
     state: {
-        snackbar: {}
+        snackbar: {},
+        // Populated by the axios error interceptor before routing to an error page.
+        error: { errorMessage: '', requestData: '' }
     },
     mutations: {
         SET_SNACKBAR(state, snackbar) {
             state.snackbar = snackbar;
+        },
+        SET_ERROR(state, error) {
+            state.error = { errorMessage: '', requestData: '', ...error };
         }
     },
     actions: {

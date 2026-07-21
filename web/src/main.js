@@ -1,65 +1,30 @@
-import Vue from 'vue';
-import App from './App.vue';
-import vuetify from './plugins/vuetify';
-import axios from 'axios';
-import VuetifyConfirm from 'vuetify-confirm';
-import i18n from './i18n';
-import 'vuetify/dist/vuetify.css';
-import Vuex from 'vuex';
-import store from './store/index';
-import VueRouter from 'vue-router'
-import PageNotFound404 from '@/components/errorPages/404';
-import ServerError500 from '@/components/errorPages/500';
-import BadRequest from '@/components/errorPages/400';
-import Debts from "@/components/Debts";
-import ErrorPage from "@/components/errorPages/ErrorPage";
+import { createApp } from 'vue'
+import App from './App.vue'
+import vuetify from './plugins/vuetify'
+import confirm from './plugins/confirm'
+import i18n from './i18n'
+import store from './store'
+import router from './router'
+import '@mdi/font/css/materialdesignicons.css'
 
-Vue.config.productionTip = false;
-Vue.http = Vue.prototype.$http = axios;
-Vue.use(VuetifyConfirm, {vuetify});
-Vue.use(require('vue-moment'));
-Vue.use(Vuex);
-Vue.use(VueRouter);
+const app = createApp(App)
 
-const routes = [
-  {
-    path: '/',
-    component: Debts
-  },
-  {
-    path: '/400',
-    name: '400',
-    component: BadRequest,
-    props: true
-  },
-  {
-    path: '/404',
-    component: PageNotFound404
-  },
-  {
-    path: '/500',
-    component: ServerError500
-  },
-  {
-    path: '/error',
-    name: 'error',
-    component: ErrorPage,
-    props: true
-  }
-]
+// Global formatters replacing the Vue 2 filters (removed in Vue 3).
+app.config.globalProperties.$formatPrice = (value) => {
+    if (value === null || value === undefined || value === '') return ''
+    const val = (value / 1).toFixed(0)
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+}
+app.config.globalProperties.$formatDate = (date) => {
+    if (!date) return ''
+    const [year, month, day] = date.split('-')
+    return `${day}-${month}-${year}`
+}
 
-// 3. Create the router instance and pass the `routes` option
-// You can pass in additional options here, but let's
-// keep it simple for now.
-export const router = new VueRouter({
-  mode: 'history',
-  routes // short for `routes: routes`
-})
+app.use(vuetify)
+app.use(store)
+app.use(router)
+app.use(i18n)
+app.use(confirm)
 
-new Vue({
-  vuetify,
-  store,
-  router,
-  i18n,
-  render: h => h(App)
-}).$mount('#app');
+app.mount('#app')

@@ -3,20 +3,18 @@
         <h1>400 - Bad Request</h1>
         <v-container>
             <v-row>
-                <v-col class="md-4" offset="md-3">
+                <v-col cols="12" md="6" offset-md="3">
                     <v-textarea
                             label="Request data" readonly
                             rows="5"
-                            :value="requestDataPretty"
+                            :model-value="requestDataPretty"
                     ></v-textarea>
                 </v-col>
-                <v-spacer></v-spacer>
             </v-row>
         </v-container>
         <v-btn
                 elevation="4"
-                large
-                raised
+                size="large"
                 @click="$router.push('/')"
         >HOME
         </v-btn>
@@ -26,20 +24,18 @@
 <script>
 export default {
     name: "BadRequest",
-    props: ['requestData'],
-    filters: {
-        pretty: function (value) {
-            return JSON.stringify(JSON.parse(value), null, 2);
-        }
-    },
     computed: {
+        requestData() {
+            return this.$store.state.error.requestData;
+        },
         requestDataPretty() {
-            return this.$options.filters.pretty(this.requestData);
+            if (!this.requestData) return '';
+            try {
+                return JSON.stringify(JSON.parse(this.requestData), null, 2);
+            } catch (e) {
+                return String(this.requestData);
+            }
         }
     }
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -1,90 +1,61 @@
 <template>
-  <div id="app">
-    <v-app id="inspire">
-        <v-navigation-drawer v-model="drawer" app clipped>
-          <v-list dense>
-            <v-list-item link>
-              <v-list-item-action>
-                <v-icon>mdi-view-dashboard</v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title @click="goHome()">Home</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-navigation-drawer>
+  <v-app>
+    <v-app-bar>
+      <v-app-bar-title>{{ $t('title') }}</v-app-bar-title>
 
-        <v-app-bar app clipped-left>
-          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <v-toolbar-title>{{ $t('title')}}</v-toolbar-title>
+      <v-spacer></v-spacer>
 
-          <v-spacer></v-spacer>
+      <!-- Page-level actions teleport in here (e.g. Add debt from Debts.vue) -->
+      <div id="app-bar-actions" class="d-flex align-center mr-2"></div>
 
-          <v-switch v-model="isDark" hide-details></v-switch>
-          <LocaleSwitch/>
-        </v-app-bar>
+      <v-btn
+              icon
+              variant="text"
+              :title="isDark ? 'Switch to light theme' : 'Switch to dark theme'"
+              :aria-label="isDark ? 'Switch to light theme' : 'Switch to dark theme'"
+              class="mr-2"
+              @click="isDark = !isDark"
+      >
+        <v-icon>{{ isDark ? 'mdi-weather-night' : 'mdi-white-balance-sunny' }}</v-icon>
+      </v-btn>
+      <LocaleSwitch />
+    </v-app-bar>
 
-        <v-main>
-          <v-container fluid>
-            <v-row no-gutters>
-              <v-col>
-                <router-view></router-view>
-              </v-col>
-            </v-row>
+    <v-main>
+      <v-container fluid>
+        <router-view></router-view>
+      </v-container>
 
+      <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="snackbar.timeout">
+        {{ snackbar.message }}
+        <template #actions>
+          <v-btn variant="text" @click="snackbar.show = false">Close</v-btn>
+        </template>
+      </v-snackbar>
+    </v-main>
 
-            <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="snackbar.timeout">
-              {{ snackbar.message }}
-
-              <template v-slot:action="{ attrs }">
-                <v-btn
-                    text
-                    v-bind="attrs"
-                    @click="snackbar.show = false"
-                >
-                  Close
-                </v-btn>
-              </template>
-            </v-snackbar>
-          </v-container>
-        </v-main>
-    </v-app>
-  </div>
+    <ConfirmDialog />
+  </v-app>
 </template>
 
 <script>
-  import Vuetify from "vuetify";
-  import LocaleSwitch from "./components/LocaleSwitch";
+import LocaleSwitch from './components/LocaleSwitch.vue';
+import ConfirmDialog from './components/ConfirmDialog.vue';
 
-  export default {
-    components: { LocaleSwitch },
-    vuetify: new Vuetify(),
-    props: {
-      source: String,
-    },
-    data: () => ({
-      drawer: null
-    }),
-    created() {
-      this.$vuetify.theme.dark = true;
-    },
-    methods: {
-      goHome() {
-        if (this.$route.fullPath !== '/') this.$router.push('/');
-      }
-    },
-    computed: {
-      isDark: {
-        get() {
-          return this.$vuetify.theme.isDark
-        },
-        set() {
-          this.$vuetify.theme.isDark = !this.$vuetify.theme.isDark;
-        }
+export default {
+  components: { LocaleSwitch, ConfirmDialog },
+  computed: {
+    isDark: {
+      get() {
+        return this.$vuetify.theme.global.name === 'dark';
       },
-      snackbar() {
-        return this.$store.state.snackbar;
+      set(val) {
+        this.$vuetify.theme.global.name = val ? 'dark' : 'light';
       }
+    },
+    snackbar() {
+      return this.$store.state.snackbar;
     }
   }
+}
 </script>

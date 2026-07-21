@@ -10,6 +10,17 @@
     "currentDebt": "Současný Dluh",
     "debtFrom": "Dluh od",
     "paidDebt": "Splaceno",
-    "paidPercentage":  "Splaceno"
+    "paidPercentage":  "Splaceno",
+    "summary": "Souhrn",
+    "paidOff": "Splaceno",
+    "debtAmount": "Dluh",
+    "paid": "Splaceno",
+    "remaining": "Zbývá",
+    "created": "Vytvořeno",
+    "description": "Popis",
+    "addDebt": "Přidat dluh",
+    "addPayment": "Přidat platbu",
+    "editDebt": "Upravit dluh",
+    "deleteDebt": "Smazat dluh"
   }
 }

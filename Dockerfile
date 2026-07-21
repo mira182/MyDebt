@@ -1,4 +1,4 @@
-FROM maven:3.9.6-eclipse-temurin-11 AS buildstage
+FROM maven:3.9.9-eclipse-temurin-21 AS buildstage
 
 WORKDIR /usr/app
 
@@ -7,7 +7,7 @@ COPY . .
 RUN mvn -DskipTests clean package
 
 
-FROM eclipse-temurin:11-jre-jammy AS runstage
+FROM eclipse-temurin:21-jre-jammy AS runstage
 
 WORKDIR /usr/app
 

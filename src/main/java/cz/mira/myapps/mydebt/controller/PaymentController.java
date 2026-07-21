@@ -2,6 +2,7 @@ package cz.mira.myapps.mydebt.controller;
 
 import cz.mira.myapps.mydebt.model.dto.PaymentDTO;
 import cz.mira.myapps.mydebt.service.payment.PaymentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class PaymentController {
     }
 
     @PostMapping("/{paymentId}")
-    public PaymentDTO updatePayment(@PathVariable long paymentId, @RequestBody PaymentDTO paymentDTO) {
+    public PaymentDTO updatePayment(@PathVariable long paymentId, @Valid @RequestBody PaymentDTO paymentDTO) {
         return paymentService.updatePayment(paymentId, paymentDTO);
     }
 }

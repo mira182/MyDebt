@@ -1,14 +1,26 @@
-version: "3.1"
+# Local development database only - the deployed stacks use docker-compose.yml /
+# docker-compose.registry.yaml. Start it with:
+#   docker compose -f docker-compose.dev.yml up -d
 services:
-  postgres:
-    image: postgres:9.6-alpine
-    container_name: postgres_for_my_apps
-    expose:
-      - 5432
-    ports:
-      - "5432:5432"
+  mydebt-dev-postgres:
+    image: postgres:16-alpine
+    container_name: mydebt-dev-postgres
     environment:
-      - POSTGRES_PASSWORD=macos
-      - POSTGRES_USER=webappuser
-      - POSTGRES_DB=my_debt
+      POSTGRES_DB: my_debt
+      POSTGRES_USER: webappuser
+      POSTGRES_PASSWORD: macos
+    ports:
+      # Host 5432 is already taken by another dev database, so publish on 5435
+      # (matches spring.datasource.url in application.properties).
+      - "5435:5432"
+    volumes:
+      - mydebt-dev-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U webappuser -d my_debt"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
+
+volumes:
+  mydebt-dev-pgdata:

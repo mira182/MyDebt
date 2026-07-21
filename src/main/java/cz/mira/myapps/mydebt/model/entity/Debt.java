@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,11 +36,6 @@ public class Debt {
     public void addPayment(Payment payment) {
         payments.add(payment);
         payment.setDebt(this);
-    }
-
-    public void removePayment(Payment payment) {
-        payment.setDebt(null);
-        payments.remove(payment);
     }
 
     public void removePayment(Long paymentId) {

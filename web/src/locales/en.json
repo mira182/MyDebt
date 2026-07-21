@@ -10,6 +10,17 @@
     "currentDebt": "Current Debt",
     "debtFrom": "Debt From",
     "paidDebt": "Already paid",
-    "paidPercentage":  "Paid percentage"
+    "paidPercentage":  "Paid percentage",
+    "summary": "Summary",
+    "paidOff": "Paid off",
+    "debtAmount": "Debt",
+    "paid": "Paid",
+    "remaining": "Remaining",
+    "created": "Created",
+    "description": "Description",
+    "addDebt": "Add debt",
+    "addPayment": "Add payment",
+    "editDebt": "Edit debt",
+    "deleteDebt": "Delete debt"
   }
 }

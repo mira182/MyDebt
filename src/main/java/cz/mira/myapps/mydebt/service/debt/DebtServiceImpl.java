@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +47,21 @@ public class DebtServiceImpl implements DebtService {
             return debtMapper.entityToDto(debtRepository.save(debtMapper.dtoToEntity(debtDto)));
         else
             return debtMapper.entityToDto(debtRepository.save(debtRepository.findById(debtDto.getId()).orElseGet(() -> debtMapper.dtoToEntity(debtDto))));
+    }
+
+    @Override
+    @Transactional
+    public DebtDTO updateDebt(Long debtId, DebtDTO debtDTO) {
+        final Debt debt = debtRepository.findById(debtId).orElseThrow(() -> new EntityNotFoundException("Debt with id: " + debtId + " was not found."));
+        // Preserve the amount already paid so far; if the initial amount is edited,
+        // the remaining (current) debt shifts by the same delta.
+        final int alreadyPaid = debt.getInitialDebt() - debt.getCurrentDebt();
+        debt.setTitle(debtDTO.getTitle());
+        debt.setDescription(debtDTO.getDescription());
+        debt.setInitialDebt(debtDTO.getInitialDebt());
+        debt.setDebtStartDate(debtDTO.getDebtStartDate());
+        debt.setCurrentDebt(debtDTO.getInitialDebt() - alreadyPaid);
+        return debtMapper.entityToDto(debt);
     }
 
     @Override

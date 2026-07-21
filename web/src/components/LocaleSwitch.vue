@@ -1,7 +1,7 @@
 <template>
-    <v-chip-group v-model="$i18n.locale" active-class="blue--text text--lighten-1" mandatory>
+    <v-chip-group v-model="currentLocale" selected-class="text-primary" mandatory>
         <v-chip v-for="lang in langs" :key="lang" :value="lang">
-            {{ lang | capitalize }}
+            {{ lang.toUpperCase() }}
         </v-chip>
     </v-chip-group>
 </template>
@@ -11,10 +11,14 @@
         data () {
             return { langs: ['en', 'cz'] }
         },
-        filters: {
-            capitalize: function (value) {
-                if (!value) return '';
-                return value.toUpperCase();
+        computed: {
+            currentLocale: {
+                get() {
+                    return this.$i18n.locale;
+                },
+                set(val) {
+                    if (val) this.$i18n.locale = val;
+                }
             }
         }
     }

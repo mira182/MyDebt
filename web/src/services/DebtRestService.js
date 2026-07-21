@@ -7,6 +7,9 @@ export default {
     createDebt(debt) {
         return api.post('debts', debt);
     },
+    updateDebt(debtId, debt) {
+        return api.put('debts/' + debtId, debt);
+    },
     deleteDebt(debtId) {
         return api.delete('debts/' + debtId);
     },

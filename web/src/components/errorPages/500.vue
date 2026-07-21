@@ -3,8 +3,7 @@
         <h1>500 - Server error</h1>
         <v-btn
                 elevation="4"
-                large
-                raised
+                size="large"
                 @click="$router.push('/')"
         >HOME
         </v-btn>
@@ -16,7 +15,3 @@ export default {
     name: "ServerError500"
 }
 </script>
-
-<style scoped>
-
-</style>
