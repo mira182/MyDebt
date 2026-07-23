@@ -7,12 +7,10 @@
         </Teleport>
 
         <div id="debts" v-if="debts != null && debts.length > 0">
-            <v-tabs v-model="tab" show-arrows>
-                <v-tab v-for="debt in sortedDebts" :key="debt.id" :value="debt.id"
-                       class="debt-tab" :class="{ 'debt-tab--paid': isPaidOff(debt) }">
-                    <span class="debt-tab__progress" :title="roundedPercentage(debt) + ' % paid'">
-                        <span class="debt-tab__progress-fill" :style="{ width: paidPercentage(debt) + '%' }"></span>
-                    </span>
+            <!-- height must be set on v-tabs itself: it drives --v-tabs-height,
+                 which each v-tab inherits. Styling the tab alone just overflows. -->
+            <v-tabs v-model="tab" show-arrows hide-slider height="84">
+                <v-tab v-for="debt in sortedDebts" :key="debt.id" :value="debt.id" class="debt-tab">
                     <span class="debt-tab__label">
                         <v-icon v-if="isPaidOff(debt)" size="x-small" color="success" class="mr-1">mdi-check-circle</v-icon>
                         {{ debt.title }}
@@ -188,9 +186,41 @@ export default {
 
 <style scoped>
 .debt-tab {
-    min-height: 60px;
+    padding: 12px 20px 16px;
     text-transform: none;
     position: relative;
+    border-radius: 8px 8px 0 0;
+    opacity: 0.68;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.debt-tab :deep(.v-btn__content) {
+    height: 100%;
+    justify-content: center;
+    overflow: visible;
+}
+
+.debt-tab:hover {
+    opacity: 1;
+    background: rgba(var(--v-theme-on-surface), 0.06);
+}
+
+.debt-tab.v-tab--selected {
+    opacity: 1;
+}
+
+.debt-tab.v-tab--selected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgb(var(--v-theme-primary));
+}
+
+.debt-tab.v-tab--selected .debt-tab__amount {
+    opacity: 0.85;
 }
 
 .debt-tab :deep(.v-btn__content) {
@@ -210,24 +240,6 @@ export default {
 .debt-tab__amount {
     font-size: 0.78rem;
     opacity: 0.65;
-}
-
-.debt-tab__progress {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.debt-tab__progress-fill {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 4px;
-    background: #6366f1;
-    transition: width 0.3s ease;
 }
 
 /* Summary panel */
